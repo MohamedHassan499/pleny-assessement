@@ -4,10 +4,9 @@
   "description": "Pleny assessement",
   "main": "app.js",
   "scripts": {
-    "dev": "nodemon app.ts",
     "build": "tsc",
-    "start": "node ./dist/app.js",
-    "test": "jest --watchAll --verbose"
+    "seed": "npx tsx scripts/seed.ts",
+    "import": "npx tsx scripts/import.ts"
   },
   "license": "UNLICENSED",
   "author": "Mohamed Hassan",
