@@ -10,7 +10,10 @@ const MIN_LOCATIONS = 1
 var currentYear = new Date().getFullYear()
 
 ;(async () => {
-  mongoose.connect(process.env.DATABASE_URL!)
+  if (!process.env.DATABASE_URL) {
+    throw new Error('DATABASE_URL is not set')
+  }
+  mongoose.connect(process.env.DATABASE_URL)
   const brands = []
   for (let i = 0; i < 10; i++) {
     const brand = new Brand({

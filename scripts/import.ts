@@ -1,16 +1,10 @@
-import fs from 'fs'
-import mongoose, { mongo } from 'mongoose'
+import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 import brands from '../data/brands.json'
 import { Brand } from '../db/brands-schema'
+import { validName, validNumberOfLocations, validYearFounded } from '../utils'
+import { BrandType } from '../types'
 dotenv.config()
-
-type BrandType = {
-  brandName: string
-  yearFounded: number
-  headquarters: string
-  numberOfLocations: number
-}
 
 const MIN_YEAR = 1600
 const MIN_LOCATIONS = 1
@@ -21,28 +15,17 @@ const getNumericValues = (brand: Record<string, any>) => {
     .sort((a, b) => +a - +b)
 }
 
-const validYearFounded = (yearFounded: number) => {
-  if (typeof yearFounded !== 'number') {
-    return false
-  }
-  const currentYear = new Date().getFullYear()
-  return yearFounded >= 1600 && yearFounded <= currentYear
-}
-
-const validName = (brandName: string) => {
-  return brandName && brandName.trim().length > 0
-}
-
-const validNumberOfLocations = (numberOfLocations: number) => {
-  return numberOfLocations > 0
-}
-
 ;(async () => {
   try {
-    await mongoose.connect(process.env.DATABASE_URL!)
+    if (!process.env.DATABASE_URL) {
+      throw new Error('DATABASE_URL is not set')
+    }
+    await mongoose.connect(process.env.DATABASE_URL)
     const validBrands: BrandType[] = []
     brands.forEach(async (brand) => {
       const numericValues: number[] = getNumericValues(brand)
+
+      // Check if the brand object has the required properties
       if (!brand.brandName || !brand.headquarters) {
         return
       }
