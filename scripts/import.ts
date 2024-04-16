@@ -53,6 +53,7 @@ const getNumericValues = (brand: Record<string, any>) => {
       }
     })
     await Brand.insertMany(validBrands)
+    await mongoose.connection.close()
   } catch (e) {
     console.error(e)
     process.exit(1)
