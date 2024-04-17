@@ -3,6 +3,7 @@ import dotenv from 'dotenv'
 import ExcelJs from 'exceljs'
 import { faker } from '@faker-js/faker'
 import { Brand } from '../db/brands-schema'
+import { BrandType } from '../types'
 dotenv.config()
 
 const MIN_YEAR = 1600
@@ -14,7 +15,7 @@ var currentYear = new Date().getFullYear()
     throw new Error('DATABASE_URL is not set')
   }
   mongoose.connect(process.env.DATABASE_URL)
-  const brands = []
+  const brands: BrandType[] = []
   for (let i = 0; i < 10; i++) {
     const brand = new Brand({
       brandName: faker.company.name(),
@@ -38,6 +39,5 @@ var currentYear = new Date().getFullYear()
   ]
   worksheet.addRows(brands)
   await workbook.xlsx.writeFile('output/brands.xlsx')
-  console.log('Brands exported to Excel')
   await mongoose.connection.close()
 })()

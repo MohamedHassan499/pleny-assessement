@@ -21,8 +21,16 @@ const getNumericValues = (brand: Record<string, any>) => {
       throw new Error('DATABASE_URL is not set')
     }
     await mongoose.connect(process.env.DATABASE_URL)
+    const fields = ['brandName', 'yearFounded', 'headquarters', 'numberOfLocations']
     const validBrands: BrandType[] = []
-    brands.forEach(async (brand) => {
+    brands.forEach((brand) => {
+      const brandAttributes = Object.keys(brand)
+      brandAttributes.forEach((key) => {
+        if (!fields.includes(key)) {
+          //@ts-expect-error
+          delete brand[key]
+        }
+      })
       const numericValues: number[] = getNumericValues(brand)
 
       // Check if the brand object has the required properties
